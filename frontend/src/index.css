@@ -1,0 +1,188 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@layer base {
+  :root {
+    --background: 222 47% 5%;
+    --foreground: 210 40% 92%;
+
+    --card: 222 40% 8%;
+    --card-foreground: 210 40% 92%;
+
+    --popover: 222 40% 8%;
+    --popover-foreground: 210 40% 92%;
+
+    --primary: 226 100% 67%;
+    --primary-foreground: 222 47% 5%;
+
+    --secondary: 256 100% 65%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 30% 14%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 256 100% 65%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 100% 62%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 145 100% 39%;
+    --success-foreground: 222 47% 5%;
+
+    --warning: 36 100% 50%;
+    --warning-foreground: 222 47% 5%;
+
+    --border: 222 30% 16%;
+    --input: 222 30% 12%;
+    --ring: 226 100% 67%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 222 45% 6%;
+    --sidebar-foreground: 210 20% 70%;
+    --sidebar-primary: 226 100% 67%;
+    --sidebar-primary-foreground: 222 47% 5%;
+    --sidebar-accent: 222 30% 12%;
+    --sidebar-accent-foreground: 210 40% 92%;
+    --sidebar-border: 222 30% 14%;
+    --sidebar-ring: 226 100% 67%;
+
+    --glow-primary: 0 0 20px hsl(226 100% 67% / 0.4), 0 0 40px hsl(226 100% 67% / 0.1);
+    --glow-purple: 0 0 20px hsl(256 100% 65% / 0.4), 0 0 40px hsl(256 100% 65% / 0.1);
+    --glow-red: 0 0 20px hsl(0 100% 62% / 0.4), 0 0 40px hsl(0 100% 62% / 0.1);
+    --glow-green: 0 0 20px hsl(145 100% 39% / 0.4), 0 0 40px hsl(145 100% 39% / 0.1);
+
+    --glass-bg: hsl(222 40% 8% / 0.6);
+    --glass-border: hsl(222 30% 20% / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glow-border-primary {
+    box-shadow: var(--glow-primary);
+    border-color: hsl(226 100% 67% / 0.3);
+  }
+
+  .glow-border-red {
+    box-shadow: var(--glow-red);
+    border-color: hsl(0 100% 62% / 0.3);
+  }
+
+  .glow-border-green {
+    box-shadow: var(--glow-green);
+    border-color: hsl(145 100% 39% / 0.3);
+  }
+
+  .glow-border-purple {
+    box-shadow: var(--glow-purple);
+    border-color: hsl(256 100% 65% / 0.3);
+  }
+
+  .glow-text-primary {
+    text-shadow: 0 0 10px hsl(226 100% 67% / 0.5), 0 0 20px hsl(226 100% 67% / 0.2);
+  }
+
+  .neon-button {
+    @apply relative overflow-hidden transition-all duration-300;
+    box-shadow: 0 0 15px hsl(226 100% 67% / 0.3);
+  }
+  .neon-button:hover {
+    box-shadow: 0 0 25px hsl(226 100% 67% / 0.5), 0 0 50px hsl(226 100% 67% / 0.2);
+    transform: translateY(-1px);
+  }
+
+  .cyber-grid {
+    background-image:
+      linear-gradient(hsl(226 100% 67% / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(226 100% 67% / 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .scan-line {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      hsl(226 100% 67% / 0.05) 50%,
+      transparent 100%
+    );
+    animation: scan 3s linear infinite;
+  }
+
+  .pulse-ring {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes typing-dot {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(222 40% 6%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(222 30% 20%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(226 100% 67% / 0.3);
+}
