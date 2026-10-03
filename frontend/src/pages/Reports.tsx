@@ -1,68 +1,35 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck, ShieldAlert, AlertTriangle, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardHeader from "@/components/DashboardHeader";
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { fetchStats } from "@/lib/api";
 
-const reports = [
-  {
-    id: 1,
-    preview: "\"Your account has been suspended. Click here to verify...\"",
-    score: 92,
-    status: "Scam" as const,
-    date: "2026-03-24",
-    category: "Phishing",
-  },
-  {
-    id: 2,
-    preview: "\"Congratulations! You've won a $500 Amazon gift card...\"",
-    score: 88,
-    status: "Scam" as const,
-    date: "2026-03-23",
-    category: "Prize Fraud",
-  },
-  {
-    id: 3,
-    preview: "\"Hi, this is your bank. Please confirm your OTP...\"",
-    score: 75,
-    status: "Suspicious" as const,
-    date: "2026-03-22",
-    category: "UPI Scam",
-  },
-  {
-    id: 4,
-    preview: "\"Meeting rescheduled to 3 PM. See you then.\"",
-    score: 8,
-    status: "Safe" as const,
-    date: "2026-03-21",
-    category: "Legitimate",
-  },
-  {
-    id: 5,
-    preview: "\"Urgent: Work from home opportunity, earn $5000/week...\"",
-    score: 85,
-    status: "Scam" as const,
-    date: "2026-03-20",
-    category: "Job Fraud",
-  },
-  {
-    id: 6,
-    preview: "\"Your package is being held. Pay $2.99 delivery fee...\"",
-    score: 79,
-    status: "Suspicious" as const,
-    date: "2026-03-19",
-    category: "Phishing",
-  },
-];
+interface RecentInvestigation {
+  id: number;
+  verdict: string;
+  confidence: number;
+  red_flags: number;
+  timestamp: string;
+}
 
-const statusConfig = {
-  Safe: { icon: ShieldCheck, color: "text-success", border: "border-success/20", glow: "glow-border-green", bg: "bg-success/10" },
-  Suspicious: { icon: AlertTriangle, color: "text-warning", border: "border-warning/20", glow: "glow-border-purple", bg: "bg-warning/10" },
-  Scam: { icon: ShieldAlert, color: "text-destructive", border: "border-destructive/20", glow: "glow-border-red", bg: "bg-destructive/10" },
+const statusConfig: Record<string, { label: string; icon: typeof ShieldCheck; color: string; border: string; bg: string }> = {
+  SAFE: { label: "Safe", icon: ShieldCheck, color: "text-success", border: "border-success/20", bg: "bg-success/10" },
+  SUSPICIOUS: { label: "Suspicious", icon: AlertTriangle, color: "text-warning", border: "border-warning/20", bg: "bg-warning/10" },
+  SCAM: { label: "Scam", icon: ShieldAlert, color: "text-destructive", border: "border-destructive/20", bg: "bg-destructive/10" },
 };
 
 const Reports = () => {
   const navigate = useNavigate();
+  const [reports, setReports] = useState<RecentInvestigation[]>([]);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetchStats()
+      .then((res) => setReports(res.data.recentInvestigations ?? []))
+      .catch(() => setError(true));
+  }, []);
 
   return (
     <div className="min-h-screen bg-background cyber-grid">
@@ -83,9 +50,18 @@ const Reports = () => {
             </h1>
           </div>
 
+          {error && (
+            <p className="text-sm text-destructive mb-4">
+              Could not reach the ARIA backend. Start it with <code>npm run dev</code> in the backend folder.
+            </p>
+          )}
+          {!error && reports.length === 0 && (
+            <p className="text-sm text-muted-foreground">No investigations yet. Run one from the Investigate page.</p>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {reports.map((report, i) => {
-              const config = statusConfig[report.status];
+              const config = statusConfig[report.verdict] ?? statusConfig.SAFE;
               const Icon = config.icon;
               return (
                 <motion.div
@@ -94,28 +70,24 @@ const Reports = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className={`glass-panel rounded-xl p-5 border ${config.border} cursor-pointer hover:${config.glow} transition-all duration-300`}
+                  className={`glass-panel rounded-xl p-5 border ${config.border} transition-all duration-300`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${config.bg} ${config.color}`}>
                       <Icon className="w-3 h-3" />
-                      {report.status}
+                      {config.label}
                     </span>
-                    <span className="text-xs text-muted-foreground">{report.date}</span>
+                    <span className="text-xs text-muted-foreground">{report.timestamp}</span>
                   </div>
-
-                  <p className="text-sm text-foreground/80 font-mono leading-relaxed mb-3 line-clamp-2">
-                    {report.preview}
-                  </p>
 
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                      {report.category}
+                      {report.red_flags} red flag{report.red_flags === 1 ? "" : "s"}
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">Risk:</span>
                       <span className={`font-display text-sm font-bold ${config.color}`}>
-                        {report.score}/100
+                        {report.confidence}/100
                       </span>
                     </div>
                   </div>

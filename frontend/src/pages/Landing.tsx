@@ -68,9 +68,9 @@ const Landing = () => {
           className="mt-16 grid grid-cols-3 gap-8 sm:gap-16"
         >
           {[
-            { value: "99.2%", label: "Detection Rate" },
-            { value: "< 3s", label: "Analysis Time" },
-            { value: "50K+", label: "Threats Blocked" },
+            { value: "14", label: "Scam Patterns" },
+            { value: "< 1s", label: "Analysis Time" },
+            { value: "3", label: "Verdict Levels" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="font-display text-2xl sm:text-3xl font-bold text-primary glow-text-primary">

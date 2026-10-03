@@ -57,13 +57,21 @@ const InvestigationPanel = ({ onInvestigate, isScanning }: InvestigationPanelPro
       />
 
       <div className="flex flex-wrap gap-3 mt-4">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-all">
+        <button
+          disabled
+          title="Coming soon"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground opacity-50 cursor-not-allowed"
+        >
           <Upload className="w-4 h-4" />
-          Upload Screenshot
+          Upload Screenshot (coming soon)
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-all">
+        <button
+          disabled
+          title="Coming soon"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground opacity-50 cursor-not-allowed"
+        >
           <Mic className="w-4 h-4" />
-          Voice Input
+          Voice Input (coming soon)
         </button>
         <motion.button
           whileHover={{ scale: 1.02 }}

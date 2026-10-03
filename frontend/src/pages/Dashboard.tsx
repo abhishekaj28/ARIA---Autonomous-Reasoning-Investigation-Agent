@@ -4,15 +4,15 @@ import DashboardSidebar from "@/components/DashboardSidebar";
 import InvestigationPanel from "@/components/InvestigationPanel";
 import AIThinkingPanel, { InvestigationStep } from "@/components/AIThinkingPanel";
 import VerdictPanel, { VerdictData } from "@/components/VerdictPanel";
-import InsightWidgets from "@/components/InsightWidgets";
+import InsightWidgets, { InsightData } from "@/components/InsightWidgets";
 import { investigateMessage } from "@/lib/api"; 
 
 const investigationSteps: Omit<InvestigationStep, "status">[] = [
   { id: 1, text: "Parsing message content..." },
-  { id: 2, text: "Detecting suspicious keywords..." },
-  { id: 3, text: "Checking link reputation..." },
-  { id: 4, text: "Analyzing sender identity..." },
-  { id: 5, text: "Matching scam patterns..." },
+  { id: 2, text: "Matching scam keyword patterns..." },
+  { id: 3, text: "Scanning for links and suspicious domains..." },
+  { id: 4, text: "Checking urgency and pressure language..." },
+  { id: 5, text: "Scoring risk..." },
   { id: 6, text: "Generating threat assessment..." },
 ];
 
@@ -21,11 +21,13 @@ const Dashboard = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [verdict, setVerdict] = useState<VerdictData | null>(null);
   const [showInsights, setShowInsights] = useState(false);
+  const [insightData, setInsightData] = useState<InsightData | null>(null);
 
   const runInvestigation = useCallback(async (text: string) => {
     setIsScanning(true);
     setVerdict(null);
     setShowInsights(false);
+    setInsightData(null);
     setSteps([]);
 
     investigationSteps.forEach((step, i) => {
@@ -48,13 +50,14 @@ const Dashboard = () => {
 
         const riskLevel =
           data.verdictClass === "scam" ? "high-risk" :
-          data.verdictClass === "warning" ? "medium-risk" : "low-risk";
+          data.verdictClass === "warning" ? "suspicious" : "safe";
 
         setVerdict({
           riskLevel,
           score: data.confidence,
           reasons: data.steps.map((s: any) => s.text),
         });
+        setInsightData(data);
         setShowInsights(true);
       }, investigationSteps.length * 600 + 200);
 
@@ -82,7 +85,7 @@ const Dashboard = () => {
           </div>
 
           {/* Insight widgets */}
-          <InsightWidgets visible={showInsights} />
+          <InsightWidgets visible={showInsights} data={insightData} />
 
           {/* Verdict */}
           {verdict && <VerdictPanel verdict={verdict} />}

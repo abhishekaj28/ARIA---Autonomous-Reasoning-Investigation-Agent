@@ -58,7 +58,7 @@ const VerdictPanel = ({ verdict }: VerdictPanelProps) => {
           </div>
           <div>
             <h3 className={`font-display text-xl font-bold ${config.textColor} tracking-wider`}>
-              🚨 {config.label}
+              {config.label}
             </h3>
             <p className="text-sm text-muted-foreground">Analysis Complete</p>
           </div>

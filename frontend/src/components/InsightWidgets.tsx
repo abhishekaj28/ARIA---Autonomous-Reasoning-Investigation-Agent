@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Globe, Link2, Phone, Tag } from "lucide-react";
+import { Gauge, Flag, Link2, ShieldAlert } from "lucide-react";
 
 interface InsightCardProps {
   icon: React.ElementType;
@@ -31,18 +31,42 @@ const InsightCard = ({ icon: Icon, label, value, status = "safe" }: InsightCardP
   </motion.div>
 );
 
-interface InsightWidgetsProps {
-  visible: boolean;
+interface InvestigationStepData {
+  label: string;
+  text: string;
 }
 
-const InsightWidgets = ({ visible }: InsightWidgetsProps) => {
-  if (!visible) return null;
+export interface InsightData {
+  verdict: string;
+  verdictClass: "scam" | "warning" | "safe" | string;
+  confidence: number;
+  steps: InvestigationStepData[];
+}
+
+interface InsightWidgetsProps {
+  visible: boolean;
+  data: InsightData | null;
+}
+
+const InsightWidgets = ({ visible, data }: InsightWidgetsProps) => {
+  if (!visible || !data) return null;
+
+  const flagsStep = data.steps.find((s) => s.label === "RED FLAGS DETECTED");
+  const redFlags = !flagsStep || flagsStep.text.startsWith("No red flags")
+    ? 0
+    : flagsStep.text.split(" | ").length;
+  const linkStep = data.steps.find((s) => s.label === "URL / CONTACT SCAN");
+  const linkFound = !!linkStep && linkStep.text.startsWith("External link");
+
+  const riskStatus =
+    data.verdictClass === "scam" ? "danger" :
+    data.verdictClass === "warning" ? "warning" : "safe";
 
   const insights = [
-    { icon: Globe, label: "Domain Age", value: "3 days", status: "danger" as const },
-    { icon: Link2, label: "Link Safety", value: "Malicious", status: "danger" as const },
-    { icon: Phone, label: "Phone Risk", value: "Unknown", status: "warning" as const },
-    { icon: Tag, label: "Category", value: "Phishing", status: "danger" as const },
+    { icon: ShieldAlert, label: "Verdict", value: data.verdict, status: riskStatus as InsightCardProps["status"] },
+    { icon: Gauge, label: "Confidence", value: `${data.confidence}%`, status: riskStatus as InsightCardProps["status"] },
+    { icon: Flag, label: "Red Flags", value: String(redFlags), status: (redFlags > 0 ? "warning" : "safe") as InsightCardProps["status"] },
+    { icon: Link2, label: "Link Detected", value: linkFound ? "Yes" : "No", status: (linkFound ? "warning" : "safe") as InsightCardProps["status"] },
   ];
 
   return (
