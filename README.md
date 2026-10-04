@@ -4,6 +4,14 @@ ARIA analyzes suspicious messages (SMS, WhatsApp, email text) for common Indian 
 
 Built for the Technocrats Elite 8.0 hackathon (AI for Real-World Impact + Cyber Security).
 
+## Screenshots
+
+![Investigating a scam message](docs/screenshots/investigation.png)
+*A scam message investigated: verdict, confidence, red-flag count and the reasoning shown step by step.*
+
+![Analytics page](docs/screenshots/analytics.png)
+*Analytics built from the scans stored in the local database.*
+
 ## Status
 
 | Part | State |
@@ -11,7 +19,7 @@ Built for the Technocrats Elite 8.0 hackathon (AI for Real-World Impact + Cyber 
 | Express backend, SQLite logging, Swagger docs | Working |
 | React frontend (Investigate, Analytics, Reports) | Working against the backend; Analytics and Reports show real scan history from `/api/stats` |
 | Detection engine | **Rule-based**: regex patterns for urgency, credential requests, account threats, suspicious links and more |
-| LLM reasoning (Claude API) | Planned, not implemented yet |
+| LLM reasoning step | Planned, not implemented yet |
 | Screenshot and voice input | Planned, not implemented yet |
 
 ## Stack
